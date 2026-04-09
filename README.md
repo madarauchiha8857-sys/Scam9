@@ -1,2 +1,0 @@
-# Scam9
-Shajhaa
