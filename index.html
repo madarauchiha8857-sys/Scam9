@@ -1,0 +1,508 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonivia - Sound & Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfcfc;
+            overflow: hidden; 
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        }
+
+        /* --- Zonivia Grid Styles --- */
+        .zonivia-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .zonivia-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .grid-item {
+            border: 1px solid #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            background: white;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .img-box {
+            background: #f9f9f9;
+            aspect-ratio: 1/1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+        }
+
+        .img-box img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .details {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .details h3 {
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+        }
+
+        .details p {
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        /* Tags */
+        .tech-tag, .sale-tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 2px;
+            z-index: 5;
+            text-transform: uppercase;
+        }
+        .tech-tag { background: #000; color: #fff; }
+        .sale-tag { background: #ff4757; color: #fff; }
+
+        /* Modal Settings */
+        #productModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Cart & Form Inputs */
+        .tech-input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .tech-input:focus {
+            border-color: #4285f4;
+        }
+
+        /* --- Footer Styles (Inspired by Image) --- */
+        .zonivia-footer {
+            padding: 60px 20px;
+            background: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .footer-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .footer-logo-circle {
+            width: 32px;
+            height: 32px;
+            background: #000;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .footer-brand-name {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 1px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+        }
+
+        .footer-tagline {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-dot {
+            width: 5px;
+            height: 5px;
+            background: #d1d5db;
+            border-radius: 50%;
+        }
+
+        /* Animations */
+        #loader-screen { transition: opacity 0.8s ease-out; }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <!-- Loader -->
+    <div id="loader-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center;">
+        <video id="opening-video" autoplay muted playsinline style="width: 100%; max-width: 600px; height: auto;">
+            <source src="Zonivia.MP4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Header -->
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #fff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f9f9f9;">
+        <div class="logo" style="font-weight: 900; font-size: 24px; cursor: pointer;" onclick="window.scrollTo({top:0, behavior:'smooth'})">ZONIVIA</div>
+        
+        <div class="search-box" style="position: relative; display: flex; align-items: center;">
+            <input type="text" id="product-search" placeholder="Search technology..." onkeyup="searchProducts()" style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 14px; width: 180px;">
+        </div>
+
+        <div class="header-icons flex items-center">
+            <div class="relative" onclick="toggleCartModal()" style="cursor:pointer; font-size: 20px;">
+                <span>👜</span>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-blue-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <header class="relative overflow-hidden pt-4 pb-8 px-4">
+        <div class="max-w-7xl mx-auto rounded-[24px] hero-gradient min-h-[350px] flex flex-col md:flex-row items-center justify-between px-8 md:px-16 text-white">
+            <div class="md:w-1/2 py-12 text-center md:text-left">
+                <span class="text-[10px] font-black tracking-[0.4em] uppercase text-blue-400 mb-2 block">Alpha Series</span>
+                <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight uppercase">premium tech</h1>
+                <button class="bg-blue-600 text-white px-8 py-3 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition">shop now</button>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="Headset.AVIF" alt="Hero" class="w-full max-w-[250px] drop-shadow-2xl" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="text-[120px] hidden">🎧</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Grid Section -->
+    <section class="zonivia-grid" id="electronics-grid">
+        
+        <div class="grid-item" data-name="alpha headset" onclick="openProductDetail('Headset.AVIF', 'ZONIVIA ALPHA HEADSET', '₹4,999.00', 'PREMIUM AUDIO')">
+            <div class="img-box">
+                <img src="Headset.AVIF" onerror="handleImageError(this, '🎧')">
+                <span class="tech-tag">NEW</span>
+            </div>
+            <div class="details">
+                <h3>ZONIVIA ALPHA HEADSET</h3>
+                <p>₹4,999.00</p>
+            </div>
+        </div>
+
+        <div class="grid-item" data-name="smart watch s1" onclick="openProductDetail('Watch.WEBP', 'ZONIVIA SMART WATCH S1', '₹2,499.00', 'WEARABLES')">
+            <div class="img-box">
+                <img src="Watch.WEBP" onerror="handleImageError(this, '⌚')">
+            </div>
+            <div class="details">
+                <h3>ZONIVIA SMART WATCH S1</h3>
+                <p>₹2,499.00</p>
+            </div>
+        </div>
+
+        <div class="grid-item" data-name="powerbank 20k mah" onclick="openProductDetail('Powerbank.JPG', 'ZONIVIA 20K MAH POWER', '₹1,299.00', 'ACCESSORIES')">
+            <div class="img-box">
+                <img src="Powerbank.JPG" onerror="handleImageError(this, '🔋')">
+                <span class="sale-tag">SALE</span>
+            </div>
+            <div class="details">
+                <h3>ZONIVIA 20K MAH POWER</h3>
+                <p>₹1,299.00</p>
+            </div>
+        </div>
+
+        <div class="grid-item" data-name="bass boom speaker" onclick="openProductDetail('Speaker.WEBP', 'ZONIVIA BASS BOOM', '₹1,599.00', 'AUDIO')">
+            <div class="img-box">
+                <img src="Speaker.WEBP" onerror="handleImageError(this, '🔊')">
+            </div>
+            <div class="details">
+                <h3>ZONIVIA BASS BOOM</h3>
+                <p>₹1,599.00</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="productModal" onclick="closeProductDetail()">
+        <div class="bg-white p-8 rounded-lg max-w-lg w-full m-4 relative" onclick="event.stopPropagation()">
+            <button class="absolute top-4 right-4 text-2xl font-light" onclick="closeProductDetail()">&times;</button>
+            <div id="modalContent" class="text-center">
+                <div id="modalTag" class="text-[9px] font-black tracking-widest text-blue-600 mb-2 uppercase"></div>
+                <div class="bg-gray-50 py-10 rounded-lg mb-6 h-48 flex items-center justify-center">
+                    <img id="modalImg" src="" class="max-h-full max-w-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div id="modalEmoji" class="text-7xl hidden">📦</div>
+                </div>
+                <h2 id="modalTitle" class="text-xl font-black uppercase tracking-tight mb-2 text-gray-900"></h2>
+                <p id="modalPrice" class="text-blue-600 font-black text-lg mb-6"></p>
+                <button id="add-to-cart-modal-btn" class="w-full bg-black text-white py-4 rounded-md font-black uppercase text-[10px] tracking-widest">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Cart Modal (Bottom Sheet) -->
+    <div id="tech-cart-modal" style="position: fixed; bottom: -100%; left: 0; width: 100%; height: 80%; background: white; z-index: 10000; border-radius: 30px 30px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); transition: 0.5s;">
+        <div style="padding: 20px; font-family: sans-serif; height: 100%; position: relative;">
+            <div style="width: 50px; height: 5px; background: #ddd; margin: 0 auto 20px; border-radius: 10px; cursor: pointer;" onclick="toggleCartModal()"></div>
+            <h3 style="font-weight: 900; text-transform: uppercase; font-size: 18px;">Your Cart</h3>
+            <div id="cart-items-container" style="margin-top: 20px; height: calc(100% - 150px); overflow-y: auto;">
+            </div>
+            <button onclick="showCheckoutStep1()" style="position: absolute; bottom: 20px; left: 5%; width: 90%; background: #000; color: white; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase;">Confirm Order</button>
+        </div>
+    </div>
+
+    <!-- Multi-Step Tech Checkout Form -->
+    <div id="tech-checkout-form" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:white; z-index:20000; padding:20px; overflow-y: auto;">
+        <div class="max-w-md mx-auto">
+            <button onclick="hideTechCheckoutForm()" style="border: none; background: #eee; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; margin-bottom: 20px;">✕</button>
+            
+            <!-- Step 1: Name & Phone -->
+            <div id="checkout-step-1">
+                <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;">Step 1: Identity</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 25px;">Please confirm your name and WhatsApp number.</p>
+                <input type="text" id="cust-name" placeholder="Full Name" required class="tech-input">
+                <input type="number" id="cust-phone" placeholder="WhatsApp Number" required class="tech-input">
+                <button onclick="showCheckoutStep2()" style="background:#000; color:white; width:100%; padding:18px; border:none; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase;">Continue</button>
+            </div>
+
+            <!-- Step 2: PIN & Address -->
+            <div id="checkout-step-2" style="display: none;">
+                <h2 style="font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;">Step 2: Delivery</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 25px;">Where should we send your tech?</p>
+                <input type="number" id="cust-pin" placeholder="PIN Code" required class="tech-input">
+                <textarea id="cust-address" placeholder="Full Address (Street, House No, Landmark)" class="tech-input" style="height: 120px;"></textarea>
+                
+                <div style="margin-top: 20px; border: 1px solid #eee; padding: 15px; border-radius: 8px; background: #fafafa;">
+                    <h4 style="font-weight: 800; font-size: 10px; color: #999; text-transform: uppercase; margin-bottom: 5px;">Order Summary:</h4>
+                    <p style="font-size: 13px;">Items: <span id="checkout-summary-name" style="font-weight: 800;"></span></p>
+                    <p style="font-size: 14px; margin-top: 5px;">Total: <span id="checkout-summary-price" style="color: #0066cc; font-weight: 900;"></span></p>
+                </div>
+
+                <button onclick="placeZoniviaOrder()" style="background:#25D366; color:white; width:100%; padding:18px; border:none; margin-top:20px; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);">Place Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Naya Footer (User Design) -->
+    <footer class="zonivia-footer">
+        <div class="footer-logo-box">
+            <div class="footer-logo-circle">Z</div>
+            <span class="footer-brand-name">ZONIVIA</span>
+        </div>
+        <div class="footer-tagline">
+            <span>SOUND</span>
+            <span class="footer-dot"></span>
+            <span>POWER</span>
+            <span class="footer-dot"></span>
+            <span>VISION</span>
+        </div>
+        <p style="margin-top: 40px; font-size: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 2px;">© 2024 Zonivia Tech Labs</p>
+    </footer>
+
+    <script>
+        let cart = [];
+        const SHOP_WHATSAPP = "919000000000"; // Apna number yahan dalein
+
+        // Loader
+        window.addEventListener('load', function() {
+            const video = document.getElementById('opening-video');
+            const loader = document.getElementById('loader-screen');
+            if (video) {
+                video.onended = () => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => { loader.style.display = 'none'; document.body.style.overflow = 'auto'; }, 800);
+                };
+                setTimeout(() => { if(loader.style.display !== 'none') video.onended(); }, 5000);
+            }
+        });
+
+        function handleImageError(img, emoji) {
+            img.style.display = 'none';
+            const div = document.createElement('div');
+            div.className = 'text-5xl';
+            div.innerText = emoji;
+            img.parentElement.appendChild(div);
+        }
+
+        function searchProducts() {
+            let input = document.getElementById('product-search').value.toLowerCase();
+            let items = document.querySelectorAll('.grid-item');
+            items.forEach(item => {
+                let name = item.getAttribute('data-name');
+                item.style.display = name.includes(input) ? "block" : "none";
+            });
+        }
+
+        // Cart State
+        let isCartOpen = false;
+        function toggleCartModal() {
+            const modal = document.getElementById('tech-cart-modal');
+            isCartOpen = !isCartOpen;
+            modal.style.bottom = isCartOpen ? "0" : "-100%";
+            document.body.style.overflow = isCartOpen ? "hidden" : "auto";
+        }
+
+        function addToCart(name, price, img) {
+            cart.push({ name, price, img, id: Date.now() });
+            updateCartUI();
+            closeProductDetail();
+            if(!isCartOpen) toggleCartModal();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const count = document.getElementById('cart-count');
+            const summaryName = document.getElementById('checkout-summary-name');
+            const summaryPrice = document.getElementById('checkout-summary-price');
+            
+            container.innerHTML = '';
+            let total = 0;
+            let namesList = [];
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#999; margin-top:50px; font-size:14px;">Aapka cart khali hai.</p>';
+            } else {
+                cart.forEach(item => {
+                    total += parseInt(item.price.replace(/[₹,.]/g, ''));
+                    namesList.push(item.name);
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.img}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>📦</text></svg>'">
+                            <div style="flex:1;">
+                                <h4 style="font-size:10px; font-weight:900; color:#333;">${item.name}</h4>
+                                <p style="font-size:12px; font-weight:bold; color:#0066cc;">${item.price}</p>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" style="color:#ccc; font-size:24px;">&times;</button>
+                        </div>
+                    `;
+                });
+                summaryName.innerText = namesList.join(', ');
+                summaryPrice.innerText = '₹' + total.toLocaleString();
+            }
+            count.innerText = cart.length;
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            updateCartUI();
+        }
+
+        // Multi-Step Checkout Navigation
+        function showCheckoutStep1() {
+            if (cart.length === 0) return alert("Pehle items add karein!");
+            document.getElementById('tech-checkout-form').style.display = 'block';
+            document.getElementById('checkout-step-1').style.display = 'block';
+            document.getElementById('checkout-step-2').style.display = 'none';
+            toggleCartModal();
+        }
+
+        function showCheckoutStep2() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            if(!name || !phone) return alert("Naam aur Number zaruri hai!");
+            
+            document.getElementById('checkout-step-1').style.display = 'none';
+            document.getElementById('checkout-step-2').style.display = 'block';
+        }
+
+        function hideTechCheckoutForm() {
+            document.getElementById('tech-checkout-form').style.display = 'none';
+            toggleCartModal();
+        }
+
+        function placeZoniviaOrder() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const pin = document.getElementById('cust-pin').value;
+            const address = document.getElementById('cust-address').value;
+
+            if(!pin || !address) return alert("Address aur PIN code bhar dein!");
+
+            let orderDetails = cart.map((item, i) => `${i+1}. ${item.name} (${item.price})`).join('%0A');
+            let total = document.getElementById('checkout-summary-price').innerText;
+
+            const text = `*NEW ZONIVIA ORDER*%0A%0A` +
+                         `*User Details:*%0A` +
+                         `Name: ${name}%0A` +
+                         `Phone: ${phone}%0A%0A` +
+                         `*Delivery Details:*%0A` +
+                         `PIN: ${pin}%0A` +
+                         `Address: ${address}%0A%0A` +
+                         `*Items:*%0A${orderDetails}%0A%0A` +
+                         `*FINAL TOTAL: ${total}*%0A%0A` +
+                         `Please confirm my order.`;
+
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${text}`, '_blank');
+        }
+
+        // Product Modal Logic
+        function openProductDetail(img, title, price, tag) {
+            const modal = document.getElementById('productModal');
+            document.getElementById('modalImg').src = img;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalPrice').innerText = price;
+            document.getElementById('modalTag').innerText = tag;
+            document.getElementById('add-to-cart-modal-btn').onclick = () => addToCart(title, price, img);
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductDetail() {
+            document.getElementById('productModal').style.display = 'none';
+            if(!isCartOpen) document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
+
+
