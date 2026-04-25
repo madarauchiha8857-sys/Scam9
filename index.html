@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONIVIA | Future of Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007bff;
+            --primary-glow: rgba(0, 123, 255, 0.5);
+            --bg-dark: #050505;
+            --card-bg: #111;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- Updated Hero Section --- */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.7; /* Adjust brightness of video */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.4) 100%);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-content {
+            z-index: 3;
+            padding: 0 20px;
+        }
+
+        .logo-text {
+            font-size: clamp(40px, 10vw, 100px);
+            font-weight: 900;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            animation: heroFadeIn 1.5s ease-out;
+            background: linear-gradient(to bottom, #fff 50%, #999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: clamp(14px, 2vw, 18px);
+            letter-spacing: 5px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 400;
+            animation: heroFadeIn 2s ease-out;
+        }
+
+        @keyframes heroFadeIn {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+            z-index: 4;
+            animation: scrollLine 2.5s infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { transform: translateX(-50%) scaleY(0); transform-origin: top; }
+            50% { transform: translateX(-50%) scaleY(1); transform-origin: top; }
+            51% { transform: translateX(-50%) scaleY(1); transform-origin: bottom; }
+            100% { transform: translateX(-50%) scaleY(0); transform-origin: bottom; }
+        }
+
+        /* --- Products Section --- */
+        .section-title {
+            text-align: center;
+            padding: 120px 20px 60px;
+            font-size: clamp(24px, 5vw, 40px);
+            font-weight: 300;
+            letter-spacing: 8px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .products-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+        }
+
+        .product-card {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 150px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: var(--transition);
+        }
+
+        .product-card.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .product-visual {
+            flex: 1;
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            background: var(--card-bg);
+            aspect-ratio: 16/10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .product-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s ease;
+        }
+
+        .product-card:hover .product-visual img {
+            transform: scale(1.08);
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info .tag {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .product-info h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .product-info p {
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            font-size: 17px;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 18px 45px;
+            background: var(--text-main);
+            color: #000;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: 3px;
+            border-radius: 100px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: var(--text-main);
+            border-color: var(--text-main);
+            box-shadow: 0 0 30px rgba(255,255,255,0.15);
+            transform: translateY(-3px);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #080808;
+            padding: 100px 5% 40px;
+            border-top: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        .footer-brand p {
+            color: var(--text-dim);
+            margin-top: 25px;
+            max-width: 320px;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 11px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 50px;
+            letter-spacing: 2px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 900px) {
+            .product-card, .product-card:nth-child(even) {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+                margin-bottom: 100px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .logo-text {
+                letter-spacing: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">ZONIVIA</a>
+        <div class="nav-links">
+            <a href="#products">Audio</a>
+            <a href="#products">Vision</a>
+            <a href="#products">Power</a>
+            <a href="#">Support</a>
+        </div>
+        <a href="#" class="logo" style="font-size: 18px;">🛒</a>
+    </nav>
+
+    <!-- New Hero Section Implementation -->
+    <section class="hero-section">
+        <video autoplay muted loop playsinline class="hero-bg-video">
+            <source src="WatchA.mp4" type="video/mp4">
+            <!-- Note: Ensure WatchA.mp4 is in the same directory for this to play -->
+        </video>
+
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="logo-text">ZONIVIA</h1>
+                <p class="tagline">SOUND &bull; POWER &bull; VISION</p>
+            </div>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <h2 class="section-title" id="products">Core Ecosystem</h2>
+
+    <div class="products-container">
+        
+        <div class="product-card">
+            <div class="product-visual">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=1000" alt="Alpha Headset">
+            </div>
+            <div class="product-info">
+                <span class="tag">01 / AUDIO</span>
+                <h2>ALPHA HEADSET</h2>
+                <p>Pure silence. High-fidelity audio. Masterfully crafted with aerospace-grade materials to provide a weightless listening experience that lasts for 40 hours on a single charge.</p>
+                <a href="#" class="btn">Learn More</a>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-visual">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1000" alt="Smart Watch">
+            </div>
+            <div class="product-info">
+                <span class="tag">02 / VISION</span>
+                <h2>SMART WATCH S1</h2>
+                <p>Beyond a watch—a personal command center. Featuring an edge-to-edge sapphire glass display and advanced biometric tracking to keep you synced with your body and your world.</p>
+                <a href="#" class="btn">Explore S1</a>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-visual">
+                <img src="https://images.unsplash.com/photo-1619134591149-420a2c52220b?auto=format&fit=crop&q=80&w=1000" alt="Power Bank">
+            </div>
+            <div class="product-info">
+                <span class="tag">03 / POWER</span>
+                <h2>20K MAH POWER</h2>
+                <p>Engineered for those who never stop. Charge your ecosystem simultaneously with dual PD ports. Compact, rugged, and ready for any journey.</p>
+                <a href="#" class="btn">Get Power</a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo">ZONIVIA</a>
+                <p>Redefining the relationship between humanity and hardware through obsessive engineering and minimalist design.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="#">Audio Series</a></li>
+                    <li><a href="#">Wearables</a></li>
+                    <li><a href="#">Power Solutions</a></li>
+                    <li><a href="#">Accessories</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">Our Vision</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                    <li><a href="#">Global Labs</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter / X</a></li>
+                    <li><a href="#">YouTube</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 ZONIVIA TECHNOLOGIES. FUTURE IS NOW.
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll reveal animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const target = document.querySelector(targetId);
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Subtle parallax effect on video based on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const video = document.querySelector('.hero-bg-video');
+            if (scrolled < window.innerHeight) {
+                video.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
