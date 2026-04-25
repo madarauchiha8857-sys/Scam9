@@ -1,0 +1,757 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONIVIA | Future of Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007bff;
+            --primary-glow: rgba(0, 123, 255, 0.2);
+            --bg-dark: #ffffff; /* White Theme */
+            --card-bg: #f8f8f8;
+            --text-main: #000000;
+            --text-dim: #666666;
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Navigation Bar --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hamburger Menu Icon */
+        .hamburger {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 2100;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: #000;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* Side Menu (Refreshments) */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 350px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(25px);
+            z-index: 2050;
+            transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 120px 50px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 900;
+            cursor: pointer;
+            color: #ff3e3e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .side-menu h4 {
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .side-menu-item {
+            color: #000;
+            text-decoration: none;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            cursor: pointer;
+            display: block;
+        }
+
+        .side-menu-item:hover {
+            color: var(--primary);
+            transform: translateX(10px);
+        }
+
+        .side-menu-item span {
+            font-size: 14px;
+            font-weight: 400;
+            color: #999;
+            display: block;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* --- Snack Overlay --- */
+        #snack-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3000;
+            display: none;
+            color: white;
+            transition: background-color 0.5s ease;
+        }
+
+        .snack-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: row;
+        }
+
+        .snack-media {
+            flex: 1.5;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .snack-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .snack-content {
+            flex: 1;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .close-snack {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            font-size: 40px;
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        #snack-title {
+            font-size: 60px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+
+        #snack-price-info {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.8;
+        }
+
+        .hero-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.5) 100%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: clamp(40px, 10vw, 80px);
+            font-weight: 900;
+            letter-spacing: clamp(8px, 2vw, 15px);
+            color: #000;
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 0 5px 15px rgba(255,255,255,0.5);
+            animation: heroFadeIn 1.5s ease-out;
+        }
+
+        .tagline {
+            font-size: clamp(12px, 2vw, 18px);
+            letter-spacing: 5px;
+            color: #333;
+            margin-top: 10px;
+            font-weight: 400;
+            text-transform: uppercase;
+            animation: heroFadeIn 2s ease-out;
+        }
+
+        @keyframes heroFadeIn {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* --- Vertical Product Grid Section --- */
+        .zonivia-product-grid {
+            padding: 100px 5%;
+            background: #ffffff;
+        }
+
+        .grid-title {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Updated to single column as requested */
+            gap: 50px;
+            max-width: 800px; /* Narrower container for better vertical look */
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .video-preview-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9; /* Wider ratio looks better in single column */
+            border-radius: 24px;
+            overflow: hidden;
+            background: #eee;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        .card-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .grid-item:hover .card-video {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(255,255,255,1) 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .tech-tag.sale { background: #ff3e3e; }
+
+        .card-overlay h3 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .card-overlay p {
+            font-size: 18px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* --- Detail Modal --- */
+        #detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            border-radius: 32px;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .modal-media {
+            flex: 1.2;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #000;
+        }
+
+        .modal-info h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .modal-price {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .modal-desc {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #000;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .close-modal:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .buy-now-btn {
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 100px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .buy-now-btn:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #fdfdfd;
+            padding: 40px 5%;
+            border-top: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .copyright {
+            text-align: center;
+            color: #aaa;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 900px) {
+            .modal-content, .snack-container { flex-direction: column; }
+            .modal-info, .snack-content { padding: 30px; }
+            .modal-media, .snack-media { height: 300px; flex: none; }
+            #snack-title { font-size: 35px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .side-menu { width: 100%; }
+            .video-preview-box { aspect-ratio: 4/5; }
+            .card-overlay { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">ZONIVIA</a>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="#shop">Shop</a>
+                <a href="#">Technology</a>
+            </div>
+            <a href="#" class="logo" style="font-size: 18px; margin-right: 10px;">🛒</a>
+            <div class="hamburger" id="hamburger-btn" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="side-menu">
+        <div class="close-menu-btn" onclick="toggleMenu()">
+            &larr; Close Menu
+        </div>
+
+        <h4 style="margin-top: 40px;">Refreshments</h4>
+        <a class="side-menu-item" onclick="openSnackPage('drinks')">COLD DRINK<span>Chilled for your convenience</span></a>
+        <a class="side-menu-item" onclick="openSnackPage('chips')">CHIPS<span>Perfect companion for gaming</span></a>
+    </div>
+
+    <!-- Snack Overlay Modal -->
+    <div id="snack-overlay">
+        <div class="snack-container">
+            <div class="snack-media">
+                <video id="snack-video-player" autoplay muted loop playsinline class="snack-video">
+                    <source src="" type="video/mp4">
+                </video>
+            </div>
+            <div class="snack-content">
+                <div class="close-snack" onclick="closeSnackPage()">&times;</div>
+                <h2 id="snack-title">ITEM NAME</h2>
+                <p id="snack-price-info">Starting from ₹0</p>
+                <button class="buy-now-btn" style="background: #fff; color: #000;">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="hero-section">
+        <video autoplay muted loop playsinline class="hero-bg-video">
+            <source src="WatchA.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="logo-text">ZONIVIA</h1>
+                <p class="tagline">SOUND &bull; POWER &bull; VISION</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="zonivia-product-grid" id="shop">
+        <h2 class="grid-title">LATEST INNOVATIONS</h2>
+        <div class="grid-container">
+            
+            <div class="grid-item" onclick="openTechDetailPage('HeadsetA.mp4', 'ZONIVIA ALPHA HEADSET', '4,999')">
+                <div class="video-preview-box">
+                    <video autoplay muted loop playsinline class="card-video"><source src="HeadsetA.mp4" type="video/mp4"></video>
+                    <div class="card-overlay">
+                        <span class="tech-tag">PREMIUM</span>
+                        <h3>ALPHA HEADSET</h3>
+                        <p>₹4,999.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-item" onclick="openTechDetailPage('PowerbankA.mp4', 'ZONIVIA 20K POWER', '1,299')">
+                <div class="video-preview-box">
+                    <video autoplay muted loop playsinline class="card-video"><source src="PowerbankA.mp4" type="video/mp4"></video>
+                    <div class="card-overlay">
+                        <span class="tech-tag sale">SALE</span>
+                        <h3>20K MAH POWER</h3>
+                        <p>₹1,299.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-item" onclick="openTechDetailPage('SpeakerA.mp4', 'ZONIVIA BASS BOOM', '1,599')">
+                <div class="video-preview-box">
+                    <video autoplay muted loop playsinline class="card-video"><source src="SpeakerA.mp4" type="video/mp4"></video>
+                    <div class="card-overlay">
+                        <span class="tech-tag">NEW</span>
+                        <h3>BASS BOOM MINI</h3>
+                        <p>₹1,599.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-item" onclick="openTechDetailPage('WatchA.mp4', 'ZONIVIA SMART WATCH', '2,499')">
+                <div class="video-preview-box">
+                    <video autoplay muted loop playsinline class="card-video"><source src="WatchA.mp4" type="video/mp4"></video>
+                    <div class="card-overlay">
+                        <span class="tech-tag">BESTSELLER</span>
+                        <h3>SMART WATCH S1</h3>
+                        <p>₹2,499.00</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal">
+        <div class="modal-content">
+            <div class="close-modal" onclick="closeTechDetailPage()">&times;</div>
+            <div class="modal-media">
+                <video id="modal-video" autoplay muted loop playsinline class="modal-video">
+                    <source id="modal-video-source" src="" type="video/mp4">
+                </video>
+            </div>
+            <div class="modal-info">
+                <h2 id="modal-title">Product Title</h2>
+                <div class="modal-price" id="modal-price">₹0.00</div>
+                <p class="modal-desc">
+                    The pinnacle of engineering meets minimalist aesthetics. Designed for those who demand performance without compromise.
+                </p>
+                <button class="buy-now-btn">Add to Collection</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">&copy; 2026 ZONIVIA TECHNOLOGIES. ALL RIGHTS RESERVED.</div>
+    </footer>
+
+    <script>
+        const modal = document.getElementById('detail-modal');
+        const modalVideo = document.getElementById('modal-video');
+        const modalVideoSource = document.getElementById('modal-video-source');
+        const modalTitle = document.getElementById('modal-title');
+        const modalPrice = document.getElementById('modal-price');
+        const sideMenu = document.getElementById('side-menu');
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+
+        function toggleMenu() {
+            sideMenu.classList.toggle('active');
+            hamburgerBtn.classList.toggle('active');
+            document.body.style.overflow = sideMenu.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        function openSnackPage(type) {
+            const overlay = document.getElementById('snack-overlay');
+            const video = document.getElementById('snack-video-player');
+            const vSource = video.querySelector('source');
+            const title = document.getElementById('snack-title');
+            const price = document.getElementById('snack-price-info');
+
+            overlay.style.display = 'block';
+
+            if (type === 'chips') {
+                overlay.style.backgroundColor = 'red';
+                vSource.src = 'Chips.mp4';
+                title.innerText = 'CHIPS';
+                price.innerText = 'Starting from ₹5';
+            } else if (type === 'drinks') {
+                overlay.style.backgroundColor = '#000';
+                vSource.src = 'ColdD.mp4';
+                title.innerText = 'COLD DRINK';
+                price.innerText = 'Starting from ₹10';
+            }
+
+            video.load();
+            let playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {}).catch(error => {
+                    video.muted = true;
+                    video.play();
+                });
+            }
+
+            toggleMenu();
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeSnackPage() {
+            const overlay = document.getElementById('snack-overlay');
+            const video = document.getElementById('snack-video-player');
+            overlay.style.display = 'none';
+            video.pause();
+            document.body.style.overflow = 'auto';
+        }
+
+        function openTechDetailPage(videoSrc, title, price) {
+            modalTitle.innerText = title;
+            modalPrice.innerText = `₹${price}.00`;
+            modalVideoSource.src = videoSrc;
+            modalVideo.load();
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTechDetailPage() {
+            modal.style.display = 'none';
+            modalVideo.pause();
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) closeTechDetailPage();
+            if (event.target == document.getElementById('snack-overlay')) closeSnackPage();
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const video = document.querySelector('.hero-bg-video');
+            if (scrolled < window.innerHeight) {
+                video.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.3}px))`;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
