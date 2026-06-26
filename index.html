@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>91Club Official</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: white; }
+        .bg-91club { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Game Page -->
+    <div id="game-page" class="max-w-md mx-auto">
+        <div class="p-4 bg-gray-900 border-b border-gray-800 text-center font-bold text-lg">91Club Games</div>
+        <div class="p-4 grid grid-cols-2 gap-4">
+            <!-- Wingo is now interactive -->
+            <button onclick="playWingo()" class="bg-green-600 p-6 rounded-xl text-center shadow-lg border border-green-700 font-bold hover:bg-green-500">Wingo (Play)</button>
+            <div class="bg-gray-800 p-6 rounded-xl text-center shadow-lg border border-gray-700 opacity-50">Trx Hash</div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center shadow-lg border border-gray-700 opacity-50">5D Lotre</div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center shadow-lg border border-gray-700 opacity-50">Aviator</div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center shadow-lg border border-gray-700 opacity-50">Casino</div>
+        </div>
+        <div id="wingo-status" class="text-center mt-4 text-yellow-400 font-bold"></div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile-page" class="max-w-md mx-auto hidden">
+        <div class="p-6">
+            <h2 class="text-xl font-bold mb-4">Profile</h2>
+            <div class="bg-blue-900 p-6 rounded-xl mb-6">
+                <p>Balance</p>
+                <h1 id="user-balance" class="text-4xl font-bold">₹1,390.00</h1>
+            </div>
+            
+            <button onclick="applyWithdrawal()" class="w-full bg-green-600 py-3 rounded-lg font-bold mb-6 hover:bg-green-700">Withdrawal</button>
+            
+            <div id="loader" class="hidden fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
+                <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="mt-4 text-white font-bold">Processing Withdrawal...</p>
+            </div>
+            
+            <div class="bg-gray-900 p-4 rounded-xl mb-6 border border-gray-700">
+                <h3 class="font-bold mb-4">Withdrawal History</h3>
+                <div class="flex justify-between items-center border-b border-gray-800 py-2">
+                    <div>
+                        <p class="text-sm">25th June, 16:00</p>
+                        <p class="text-xs text-gray-400">UPI Transfer to 8806965878@ybl</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">₹500.00</p>
+                        <p class="text-xs text-green-500 font-bold">Completed</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-orange-400 text-xs text-center italic">
+                Note: All withdrawal requests take exactly 24 hours to be processed and credited to your bank account.
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="fixed bottom-0 w-full max-w-md bg-gray-950 border-t border-gray-800 flex justify-around p-4">
+        <button onclick="showPage('game')" class="font-bold">Games</button>
+        <button onclick="showPage('profile')" class="font-bold">Profile</button>
+    </div>
+
+    <script>
+        let currentBalance = 1390.00;
+
+        function showPage(p) {
+            document.getElementById('game-page').classList.toggle('hidden', p !== 'game');
+            document.getElementById('profile-page').classList.toggle('hidden', p !== 'profile');
+        }
+
+        function playWingo() {
+            const bet = confirm("Wingo: Bet ₹10 on Green?");
+            if(bet) {
+                const win = Math.random() > 0.5;
+                if(win) {
+                    currentBalance += 10;
+                    document.getElementById('wingo-status').innerText = "Congratulations! You Won ₹20!";
+                } else {
+                    currentBalance -= 10;
+                    document.getElementById('wingo-status').innerText = "Oops! You Lost ₹10.";
+                }
+                document.getElementById('user-balance').innerText = `₹${currentBalance.toFixed(2)}`;
+            }
+        }
+
+        function applyWithdrawal() {
+            const amt = prompt("Enter Amount to Withdraw:");
+            if(amt && amt > 0) {
+                const upi = prompt("Enter your UPI ID:");
+                if(upi) {
+                    const loader = document.getElementById('loader');
+                    loader.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        alert("Withdrawal Request Submitted Successfully! \n\nNote: All withdrawal requests take exactly 24 hours to be processed and credited to your account.");
+                    }, 2500);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
+
